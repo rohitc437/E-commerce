@@ -1,4 +1,5 @@
 const Product = require("../models/productModel");
+const ErrorHandler = require("../utils/errorHandler");
 
 //create product by admin
 exports.createProduct = async (req, res) => {
@@ -16,22 +17,22 @@ exports.getAllProducts = async (req, res) => {
 };
 
 //Get Single Product
-exports.findSingleProduct = async (req,res,next) => {
-  let product = await Product.findById(req.params.id)
-  
-  if(!product){
-    res.status(500).json({
-      success:false,
-      message:"Product Not Found"
-    })   
+exports.findSingleProduct = async (req, res, next) => {
+  let product = await Product.findById(req.params.id);
+
+  if (!product) {
+    // res.status(500).json({
+    //   success:false,
+    //   message:"Product Not Found"
+    // })
+    return next(new ErrorHandler());
   }
 
   res.status(200).json({
-    success:true,
-    product
-  })
-}
-
+    success: true,
+    product,
+  });
+};
 
 //update product by admin
 exports.updateProduct = async (req, res, next) => {
@@ -55,20 +56,18 @@ exports.updateProduct = async (req, res, next) => {
   });
 };
 
-
 //Delete Product
-exports.deleteProduct = async(req,res,next) =>{
-  let product = await Product.findById(req.params.id)
-  if(!product){
+exports.deleteProduct = async (req, res, next) => {
+  let product = await Product.findById(req.params.id);
+  if (!product) {
     res.status(500).json({
-      success:false,
-      message:"Product Not Found"
-    })
+      success: false,
+      message: "Product Not Found",
+    });
   }
-  await product.remove()
+  await product.remove();
   res.status(200).json({
-    success:true,
-    message:"Product Delete Sucessfully"
-  })
-}
-
+    success: true,
+    message: "Product Delete Sucessfully",
+  });
+};
