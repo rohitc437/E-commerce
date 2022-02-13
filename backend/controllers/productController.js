@@ -25,7 +25,7 @@ exports.findSingleProduct = async (req, res, next) => {
     //   success:false,
     //   message:"Product Not Found"
     // })
-    return next(new ErrorHandler());
+    return next(new ErrorHandler("Product Not Found",404));
   }
 
   res.status(200).json({
