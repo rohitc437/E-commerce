@@ -1,23 +1,25 @@
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
+const catchAsyncErros = require('../middleware/catchAsyncErrors')
+
 
 //create product by admin
-exports.createProduct = async (req, res) => {
+exports.createProduct = catchAsyncErros( async (req, res) => {
   const product = await Product.create(req.body);
   res.status(201).json({
     success: true,
     product,
   });
-};
+});
 
 //get all Products
-exports.getAllProducts = async (req, res) => {
+exports.getAllProducts =catchAsyncErros(async (req, res) => {
   const products = await Product.find();
   res.status(200).json({ success: true, products });
-};
+}) 
 
 //Get Single Product
-exports.findSingleProduct = async (req, res, next) => {
+exports.findSingleProduct =catchAsyncErros(async (req, res, next) => {
   let product = await Product.findById(req.params.id);
 
   if (!product) {
@@ -32,17 +34,18 @@ exports.findSingleProduct = async (req, res, next) => {
     success: true,
     product,
   });
-};
+}) ;
 
 //update product by admin
-exports.updateProduct = async (req, res, next) => {
+exports.updateProduct =catchAsyncErros(async (req, res, next) => {
   console.log(req.params.id);
   let product = await Product.findById(req.params.id);
   if (!product) {
-    res.status(500).json({
-      success: false,
-      message: "Product Not Found",
-    });
+    // res.status(500).json({
+    //   success: false,
+    //   message: "Product Not Found",
+    // });
+    return next("Product Not Found",404)
   }
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -54,20 +57,21 @@ exports.updateProduct = async (req, res, next) => {
     success: true,
     product,
   });
-};
+}) ;
 
 //Delete Product
-exports.deleteProduct = async (req, res, next) => {
+exports.deleteProduct =catchAsyncErros(async (req, res, next) => {
   let product = await Product.findById(req.params.id);
   if (!product) {
-    res.status(500).json({
-      success: false,
-      message: "Product Not Found",
-    });
+    // res.status(500).json({
+    //   success: false,
+    //   message: "Product Not Found",
+    // });
+    return next("Product Not Found",404)
   }
   await product.remove();
   res.status(200).json({
     success: true,
     message: "Product Delete Sucessfully",
   });
-};
+}) ;
