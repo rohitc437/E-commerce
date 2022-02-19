@@ -74,12 +74,13 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
     products,
   });
 });
-//Get Single Product
-exports.findSingleProduct = catchAsyncErrors(async (req, res, next) => {
-  let product = await Product.findById(req.params.id);
+
+// Get Product Details
+exports.getProductDetails = catchAsyncErrors(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
 
   if (!product) {
-    return next(new ErrorHander("Product Not Found", 404));
+    return next(new ErrorHander("Product not found", 404));
   }
 
   res.status(200).json({
